@@ -10,15 +10,14 @@ type Track = {
 };
 
 const MOODS = [
-  { key: "happy", label: "😄 Happy" },
-  { key: "sad", label: "😢 Sad" },
-  { key: "chill", label: "😌 Chill" },
-  { key: "workout", label: "💪 Workout" },
-  { key: "heartbreak", label: "💔 Heartbreak" },
-  { key: "party", label: "🎉 Party" },
+  { key: "happy", label: "Happy", emoji: "😄", color: "from-yellow-400 to-orange-500" },
+  { key: "sad", label: "Sad", emoji: "😢", color: "from-blue-400 to-indigo-600" },
+  { key: "chill", label: "Chill", emoji: "😌", color: "from-teal-400 to-cyan-500" },
+  { key: "workout", label: "Workout", emoji: "💪", color: "from-red-500 to-pink-600" },
+  { key: "heartbreak", label: "Heartbreak", emoji: "💔", color: "from-purple-500 to-pink-500" },
+  { key: "party", label: "Party", emoji: "🎉", color: "from-fuchsia-500 to-purple-600" },
 ];
 
-// Spotify URLs – user opens song in Spotify and taps Play.
 const PLAYLISTS: Record<string, Track[]> = {
   happy: [
     {
@@ -64,7 +63,7 @@ const PLAYLISTS: Record<string, Track[]> = {
       link: "https://open.spotify.com/search/selfie%20pulla%20kaththi",
     },
     {
-      title: "Don’u Don’u Don’u",
+      title: "Don'u Don'u Don'u",
       artist: "Anirudh Ravichander, Alisha Thomas",
       year: 2015,
       link: "https://open.spotify.com/search/donu%20donu%20donu%20maari",
@@ -399,107 +398,169 @@ const PLAYLISTS: Record<string, Track[]> = {
   ],
 };
 
+// Background image of Tamil music directors
+const DIRECTOR_IMAGE = "https://www.behindwoods.com/tamil-movies/slideshow/top-15-music-directors-in-tamil/images/top-15-music-directors-in-tamil.jpg";
+
 export default function HomePage() {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
 
   const tracks = selectedMood ? PLAYLISTS[selectedMood] ?? [] : [];
+  const currentMood = MOODS.find(m => m.key === selectedMood);
 
   return (
-    <main
-      className="min-h-screen bg-cover bg-center bg-fixed text-slate-50 flex items-center justify-center px-4"
-      style={{
-        backgroundImage:
-          'url("https://pbs.twimg.com/media/Ewht07BVoAIUW9i.jpg")',
-      }}
-    >
-      {/* Overlay to darken image for readability */}
-      <div className="absolute inset-0 bg-black/60" />
+    <main className="min-h-screen text-white relative overflow-hidden">
+      {/* Background image of Tamil music directors */}
+      <div className="absolute inset-0">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${DIRECTOR_IMAGE})`,
+            transform: 'scale(1.05)',
+          }}
+        />
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/85 to-black/90"></div>
+      </div>
 
-      {/* Content */}
-      <div className="relative w-full max-w-5xl py-10">
-        <div className="bg-slate-900/70 border border-slate-700/70 rounded-3xl backdrop-blur-md shadow-2xl shadow-black/60 px-4 sm:px-8 py-8">
-          <header className="mb-8 text-center">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-              Mood-Based Music Recommender (Tamil)
-            </h1>
-            <p className="mt-3 text-slate-200 max-w-2xl mx-auto text-sm md:text-base">
-              Select how you feel right now and get a curated list of Tamil
-              songs (2005–present) that match your vibe. Click any song to open
-              it in Spotify, then tap the play button there to start listening.
-            </p>
-          </header>
+      {/* Animated gradient overlay */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-1/2 -left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-1/3 -right-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute -bottom-1/4 left-1/3 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
 
-          <section className="mb-8">
-            <h2 className="text-lg font-semibold mb-3 text-slate-100">
-              1. Choose your mood
-            </h2>
-            <div className="flex flex-wrap gap-3">
-              {MOODS.map((mood) => (
-                <button
-                  key={mood.key}
-                  onClick={() => setSelectedMood(mood.key)}
-                  className={`px-4 py-2 rounded-full text-sm md:text-base border transition
-                    ${
-                      selectedMood === mood.key
-                        ? "bg-emerald-400 border-emerald-300 text-black shadow-lg shadow-emerald-400/40"
-                        : "bg-slate-800/80 border-slate-600 hover:bg-slate-700/90"
-                    }`}
-                >
-                  {mood.label}
-                </button>
-              ))}
+      <div className="relative z-10 container mx-auto px-4 py-12 max-w-7xl">
+        {/* Header */}
+        <header className="text-center mb-16 animate-fade-in">
+          <div className="inline-block mb-4">
+            <div className="text-6xl mb-2">🎵</div>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+            Tamil Music Mood
+          </h1>
+          <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+            Discover the perfect Tamil songs for every moment
+          </p>
+        </header>
+
+        {/* Mood Selection */}
+        <section className="mb-16">
+          <h2 className="text-2xl font-semibold mb-6 text-center text-slate-200">
+            How are you feeling today?
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
+            {MOODS.map((mood) => (
+              <button
+                key={mood.key}
+                onClick={() => setSelectedMood(mood.key)}
+                className={`group relative overflow-hidden rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 ${
+                  selectedMood === mood.key
+                    ? 'ring-4 ring-white shadow-2xl scale-105'
+                    : 'hover:shadow-xl'
+                }`}
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${mood.color} opacity-80 group-hover:opacity-100 transition-opacity`}></div>
+                <div className="relative z-10 flex flex-col items-center">
+                  <span className="text-4xl mb-2 transform group-hover:scale-110 transition-transform">
+                    {mood.emoji}
+                  </span>
+                  <span className="text-sm font-semibold text-white">
+                    {mood.label}
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Song List */}
+        <section>
+          {!selectedMood && (
+            <div className="text-center py-20">
+              <div className="text-6xl mb-4 opacity-50">🎧</div>
+              <p className="text-xl text-slate-400">
+                Select a mood above to discover your perfect playlist
+              </p>
             </div>
-            <p className="mt-2 text-xs text-slate-300">
-              (Song links open Spotify in your browser or app – then you tap ▶
-              to play.)
-            </p>
-          </section>
+          )}
 
-          <section>
-            <h2 className="text-lg font-semibold mb-3 text-slate-100">
-              2. Suggested songs
-            </h2>
-
-            {!selectedMood && (
-              <div className="py-6 text-sm text-slate-300">
-                No songs yet. Pick a mood above to see recommendations.
+          {selectedMood && tracks.length > 0 && (
+            <div className="space-y-6">
+              <div className="text-center mb-8">
+                <div className={`inline-block px-6 py-3 rounded-full bg-gradient-to-r ${currentMood?.color} text-white font-semibold text-lg shadow-lg`}>
+                  {currentMood?.emoji} {currentMood?.label} Vibes
+                </div>
+                <p className="text-sm text-slate-400 mt-3">
+                  {tracks.length} songs curated just for you
+                </p>
               </div>
-            )}
 
-            {selectedMood && tracks.length === 0 && (
-              <div className="py-6 text-sm text-slate-300">
-                No songs configured for this mood yet.
-              </div>
-            )}
-
-            {selectedMood && tracks.length > 0 && (
-              <div className="grid gap-4 md:grid-cols-2">
-                {tracks.map((track) => (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {tracks.map((track, index) => (
                   <a
                     key={track.title + track.artist}
                     href={track.link}
                     target="_blank"
                     rel="noreferrer"
-                    className="bg-slate-900/80 border border-slate-700 rounded-2xl p-4 flex flex-col justify-between hover:border-emerald-400 hover:translate-y-0.5 transition transform"
+                    className="group relative bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-5 hover:bg-slate-800/80 hover:border-slate-600 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-2xl"
+                    style={{ animationDelay: `${index * 50}ms` }}
                   >
-                    <div>
-                      <h3 className="font-semibold text-sm md:text-base">
-                        {track.title}
-                      </h3>
-                      <p className="text-xs text-slate-300 mt-1">
-                        {track.artist} • {track.year}
-                      </p>
+                    {/* Gradient overlay on hover */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${currentMood?.color} opacity-0 group-hover:opacity-10 rounded-xl transition-opacity`}></div>
+                    
+                    <div className="relative z-10">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h3 className="font-bold text-lg mb-1 group-hover:text-white transition-colors">
+                            {track.title}
+                          </h3>
+                          <p className="text-sm text-slate-400 group-hover:text-slate-300 transition-colors">
+                            {track.artist}
+                          </p>
+                        </div>
+                        <span className="text-xs font-medium text-slate-500 bg-slate-900/50 px-2 py-1 rounded-full">
+                          {track.year}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-700/50">
+                        <span className="text-xs text-slate-500 flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+                          </svg>
+                          Spotify
+                        </span>
+                        <span className="text-xs font-medium text-emerald-400 group-hover:text-emerald-300 flex items-center gap-1">
+                          Play Now
+                          <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </span>
+                      </div>
                     </div>
-                    <p className="mt-3 text-[11px] text-emerald-300">
-                      Open in Spotify and tap ▶ to play ↗
-                    </p>
                   </a>
                 ))}
               </div>
-            )}
-          </section>
-        </div>
+            </div>
+          )}
+        </section>
       </div>
+
+      <style jsx>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out;
+        }
+      `}</style>
     </main>
   );
 }
