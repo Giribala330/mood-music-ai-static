@@ -405,88 +405,100 @@ export default function HomePage() {
   const tracks = selectedMood ? PLAYLISTS[selectedMood] ?? [] : [];
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-950 to-black text-slate-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-5xl py-10">
-        <header className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-            Mood-Based Music Recommender (Tamil)
-          </h1>
-          <p className="mt-3 text-slate-300 max-w-2xl mx-auto">
-            Select how you feel right now and get a curated list of Tamil songs
-            (2005–present) that match your vibe. Click any song to open it in
-            Spotify, then tap the play button there to start listening.
-          </p>
-        </header>
+    <main
+      className="min-h-screen bg-cover bg-center bg-fixed text-slate-50 flex items-center justify-center px-4"
+      style={{
+        backgroundImage:
+          'url("https://pbs.twimg.com/media/Ewht07BVoAIUW9i.jpg")',
+      }}
+    >
+      {/* Overlay to darken image for readability */}
+      <div className="absolute inset-0 bg-black/60" />
 
-        <section className="mb-8">
-          <h2 className="text-lg font-semibold mb-3 text-slate-100">
-            1. Choose your mood
-          </h2>
-          <div className="flex flex-wrap gap-3">
-            {MOODS.map((mood) => (
-              <button
-                key={mood.key}
-                onClick={() => setSelectedMood(mood.key)}
-                className={`px-4 py-2 rounded-full text-sm md:text-base border transition
-                  ${
-                    selectedMood === mood.key
-                      ? "bg-emerald-500 border-emerald-400 text-black shadow-lg shadow-emerald-500/40"
-                      : "bg-slate-800 border-slate-600 hover:bg-slate-700"
-                  }`}
-              >
-                {mood.label}
-              </button>
-            ))}
-          </div>
-          <p className="mt-2 text-xs text-slate-400">
-            (Song links open Spotify in your browser or app – then you tap ▶ to
-            play.)
-          </p>
-        </section>
+      {/* Content */}
+      <div className="relative w-full max-w-5xl py-10">
+        <div className="bg-slate-900/70 border border-slate-700/70 rounded-3xl backdrop-blur-md shadow-2xl shadow-black/60 px-4 sm:px-8 py-8">
+          <header className="mb-8 text-center">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+              Mood-Based Music Recommender (Tamil)
+            </h1>
+            <p className="mt-3 text-slate-200 max-w-2xl mx-auto text-sm md:text-base">
+              Select how you feel right now and get a curated list of Tamil
+              songs (2005–present) that match your vibe. Click any song to open
+              it in Spotify, then tap the play button there to start listening.
+            </p>
+          </header>
 
-        <section>
-          <h2 className="text-lg font-semibold mb-3 text-slate-100">
-            2. Suggested songs
-          </h2>
-
-          {!selectedMood && (
-            <div className="py-6 text-sm text-slate-400">
-              No songs yet. Pick a mood above to see recommendations.
-            </div>
-          )}
-
-          {selectedMood && tracks.length === 0 && (
-            <div className="py-6 text-sm text-slate-400">
-              No songs configured for this mood yet.
-            </div>
-          )}
-
-          {selectedMood && tracks.length > 0 && (
-            <div className="grid gap-4 md:grid-cols-2">
-              {tracks.map((track) => (
-                <a
-                  key={track.title + track.artist}
-                  href={track.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="bg-slate-900/70 border border-slate-700 rounded-2xl p-4 flex flex-col justify-between hover:border-emerald-400 hover:translate-y-0.5 transition"
+          <section className="mb-8">
+            <h2 className="text-lg font-semibold mb-3 text-slate-100">
+              1. Choose your mood
+            </h2>
+            <div className="flex flex-wrap gap-3">
+              {MOODS.map((mood) => (
+                <button
+                  key={mood.key}
+                  onClick={() => setSelectedMood(mood.key)}
+                  className={`px-4 py-2 rounded-full text-sm md:text-base border transition
+                    ${
+                      selectedMood === mood.key
+                        ? "bg-emerald-400 border-emerald-300 text-black shadow-lg shadow-emerald-400/40"
+                        : "bg-slate-800/80 border-slate-600 hover:bg-slate-700/90"
+                    }`}
                 >
-                  <div>
-                    <h3 className="font-semibold text-sm md:text-base">
-                      {track.title}
-                    </h3>
-                    <p className="text-xs text-slate-400 mt-1">
-                      {track.artist} • {track.year}
-                    </p>
-                  </div>
-                  <p className="mt-3 text-[11px] text-emerald-300">
-                    Open in Spotify and tap ▶ to play ↗
-                  </p>
-                </a>
+                  {mood.label}
+                </button>
               ))}
             </div>
-          )}
-        </section>
+            <p className="mt-2 text-xs text-slate-300">
+              (Song links open Spotify in your browser or app – then you tap ▶
+              to play.)
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold mb-3 text-slate-100">
+              2. Suggested songs
+            </h2>
+
+            {!selectedMood && (
+              <div className="py-6 text-sm text-slate-300">
+                No songs yet. Pick a mood above to see recommendations.
+              </div>
+            )}
+
+            {selectedMood && tracks.length === 0 && (
+              <div className="py-6 text-sm text-slate-300">
+                No songs configured for this mood yet.
+              </div>
+            )}
+
+            {selectedMood && tracks.length > 0 && (
+              <div className="grid gap-4 md:grid-cols-2">
+                {tracks.map((track) => (
+                  <a
+                    key={track.title + track.artist}
+                    href={track.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="bg-slate-900/80 border border-slate-700 rounded-2xl p-4 flex flex-col justify-between hover:border-emerald-400 hover:translate-y-0.5 transition transform"
+                  >
+                    <div>
+                      <h3 className="font-semibold text-sm md:text-base">
+                        {track.title}
+                      </h3>
+                      <p className="text-xs text-slate-300 mt-1">
+                        {track.artist} • {track.year}
+                      </p>
+                    </div>
+                    <p className="mt-3 text-[11px] text-emerald-300">
+                      Open in Spotify and tap ▶ to play ↗
+                    </p>
+                  </a>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
       </div>
     </main>
   );
