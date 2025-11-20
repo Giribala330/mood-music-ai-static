@@ -18,7 +18,7 @@ const MOODS = [
   { key: "party", label: "🎉 Party" },
 ];
 
-// All links are Spotify *search* URLs – no API keys needed.
+// Spotify URLs – user opens song in Spotify and taps Play.
 const PLAYLISTS: Record<string, Track[]> = {
   happy: [
     {
@@ -414,7 +414,7 @@ export default function HomePage() {
           <p className="mt-3 text-slate-300 max-w-2xl mx-auto">
             Select how you feel right now and get a curated list of Tamil songs
             (2005–present) that match your vibe. Click any song to open it in
-            Spotify search.
+            Spotify, then tap the play button there to start listening.
           </p>
         </header>
 
@@ -439,8 +439,8 @@ export default function HomePage() {
             ))}
           </div>
           <p className="mt-2 text-xs text-slate-400">
-            (Song links open Spotify in your browser or app – no login through
-            this site.)
+            (Song links open Spotify in your browser or app – then you tap ▶ to
+            play.)
           </p>
         </section>
 
@@ -480,7 +480,7 @@ export default function HomePage() {
                     </p>
                   </div>
                   <p className="mt-3 text-[11px] text-emerald-300">
-                    Open in Spotify ↗
+                    Open in Spotify and tap ▶ to play ↗
                   </p>
                 </a>
               ))}
