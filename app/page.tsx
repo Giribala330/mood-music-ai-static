@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 type Track = {
   title: string;
@@ -398,35 +398,58 @@ const PLAYLISTS: Record<string, Track[]> = {
   ],
 };
 
-// Background image of Tamil music directors
-const DIRECTOR_IMAGE = "https://www.behindwoods.com/tamil-movies/slideshow/top-15-music-directors-in-tamil/images/top-15-music-directors-in-tamil.jpg";
+// Background image
+const BACKGROUND_IMAGE =
+  "https://pbs.twimg.com/media/Ewht07BVoAIUW9i.jpg";
+
+// 🔀 Shuffle helper – returns a new array in random order
+function shuffle<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 export default function HomePage() {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [shuffleSeed, setShuffleSeed] = useState(0); // used to trigger reshuffle
 
-  const tracks = selectedMood ? PLAYLISTS[selectedMood] ?? [] : [];
-  const currentMood = MOODS.find(m => m.key === selectedMood);
+  const tracks = useMemo(() => {
+    if (!selectedMood) return [];
+    const list = PLAYLISTS[selectedMood] ?? [];
+    return shuffle(list); // 🔀 shuffled order every time
+  }, [selectedMood, shuffleSeed]);
+
+  const currentMood = MOODS.find((m) => m.key === selectedMood);
 
   return (
     <main className="min-h-screen text-white relative overflow-hidden">
-      {/* Background image of Tamil music directors */}
+      {/* Background image */}
       <div className="absolute inset-0">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url(${DIRECTOR_IMAGE})`,
-            transform: 'scale(1.05)',
+            backgroundImage: `url(${BACKGROUND_IMAGE})`,
+            transform: "scale(1.05)",
           }}
         />
         {/* Dark overlay for readability */}
-        <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/85 to-black/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/85 to-black/90" />
       </div>
 
-      {/* Animated gradient overlay */}
+      {/* Animated gradient blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-1/2 -left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-1/3 -right-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute -bottom-1/4 left-1/3 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute -top-1/2 -left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" />
+        <div
+          className="absolute top-1/3 -right-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "1s" }}
+        />
+        <div
+          className="absolute -bottom-1/4 left-1/3 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "2s" }}
+        />
       </div>
 
       <div className="relative z-10 container mx-auto px-4 py-12 max-w-7xl">
@@ -439,7 +462,7 @@ export default function HomePage() {
             Tamil Music Mood
           </h1>
           <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-            Discover the perfect Tamil songs for every moment
+            Discover the perfect Tamil songs for every moment.
           </p>
         </header>
 
@@ -452,14 +475,19 @@ export default function HomePage() {
             {MOODS.map((mood) => (
               <button
                 key={mood.key}
-                onClick={() => setSelectedMood(mood.key)}
+                onClick={() => {
+                  setSelectedMood(mood.key);
+                  setShuffleSeed((s) => s + 1); // 🔀 reshuffle on every click
+                }}
                 className={`group relative overflow-hidden rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 ${
                   selectedMood === mood.key
-                    ? 'ring-4 ring-white shadow-2xl scale-105'
-                    : 'hover:shadow-xl'
+                    ? "ring-4 ring-white shadow-2xl scale-105"
+                    : "hover:shadow-xl"
                 }`}
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${mood.color} opacity-80 group-hover:opacity-100 transition-opacity`}></div>
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${mood.color} opacity-80 group-hover:opacity-100 transition-opacity`}
+                />
                 <div className="relative z-10 flex flex-col items-center">
                   <span className="text-4xl mb-2 transform group-hover:scale-110 transition-transform">
                     {mood.emoji}
@@ -479,7 +507,7 @@ export default function HomePage() {
             <div className="text-center py-20">
               <div className="text-6xl mb-4 opacity-50">🎧</div>
               <p className="text-xl text-slate-400">
-                Select a mood above to discover your perfect playlist
+                Select a mood above to discover your perfect playlist.
               </p>
             </div>
           )}
@@ -487,11 +515,13 @@ export default function HomePage() {
           {selectedMood && tracks.length > 0 && (
             <div className="space-y-6">
               <div className="text-center mb-8">
-                <div className={`inline-block px-6 py-3 rounded-full bg-gradient-to-r ${currentMood?.color} text-white font-semibold text-lg shadow-lg`}>
+                <div
+                  className={`inline-block px-6 py-3 rounded-full bg-gradient-to-r ${currentMood?.color} text-white font-semibold text-lg shadow-lg`}
+                >
                   {currentMood?.emoji} {currentMood?.label} Vibes
                 </div>
                 <p className="text-sm text-slate-400 mt-3">
-                  {tracks.length} songs curated just for you
+                  {tracks.length} songs curated just for you (order shuffled).
                 </p>
               </div>
 
@@ -506,8 +536,10 @@ export default function HomePage() {
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     {/* Gradient overlay on hover */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${currentMood?.color} opacity-0 group-hover:opacity-10 rounded-xl transition-opacity`}></div>
-                    
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${currentMood?.color} opacity-0 group-hover:opacity-10 rounded-xl transition-opacity`}
+                    />
+
                     <div className="relative z-10">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
@@ -522,18 +554,32 @@ export default function HomePage() {
                           {track.year}
                         </span>
                       </div>
-                      
+
                       <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-700/50">
                         <span className="text-xs text-slate-500 flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
                           </svg>
                           Spotify
                         </span>
                         <span className="text-xs font-medium text-emerald-400 group-hover:text-emerald-300 flex items-center gap-1">
                           Play Now
-                          <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          <svg
+                            className="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
                           </svg>
                         </span>
                       </div>
